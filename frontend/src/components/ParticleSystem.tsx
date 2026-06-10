@@ -23,7 +23,6 @@ export default function ParticleSystem() {
   const attractorStrength = useSimStore(s => s.attractorStrength)
   const slowMotion = useSimStore(s => s.slowMotion)
   const paused = useSimStore(s => s.paused)
-  const stats = useSimStore(s => s.stats)
   const setFps = useSimStore(s => s.setFps)
   const setTotalEnergy = useSimStore(s => s.setTotalEnergy)
   const setStats = useSimStore(s => s.setStats)
@@ -94,6 +93,7 @@ export default function ParticleSystem() {
     if (statsCounter.current.frames >= 3) {
       statsCounter.current.frames = 0
       const count = updated.length || 1
+      const prevTotalCollisions = useSimStore.getState().stats.totalCollisions
       const newStats: SimulationStats = {
         speedDistribution: speedCounts.map((c, i) => ({
           min: i * bucketSize,
@@ -103,7 +103,7 @@ export default function ParticleSystem() {
         avgSpeed: sumSpeed / count,
         maxSpeed,
         collisionsPerFrame: Math.round(totalCollisionsRef.current / 3),
-        totalCollisions: stats.totalCollisions + totalCollisionsRef.current,
+        totalCollisions: prevTotalCollisions + totalCollisionsRef.current,
         regionDensity: REGION_NAMES.map((name, i) => ({
           region: name,
           count: regionCounts[i],
