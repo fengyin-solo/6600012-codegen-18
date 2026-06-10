@@ -4,6 +4,7 @@ import { OrbitControls, Stars } from '@react-three/drei'
 import ParticleSystem from './components/ParticleSystem'
 import ControlPanel from './components/ControlPanel'
 import StatsOverlay from './components/StatsOverlay'
+import DataPanel from './components/DataPanel'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <OrbitControls makeDefault enableDamping />
         </Canvas>
         <StatsOverlay />
+        <DataPanel />
       </div>
       <ControlPanel />
     </div>

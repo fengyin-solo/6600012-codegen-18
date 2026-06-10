@@ -25,3 +25,26 @@ export interface Preset {
   name: string
   params: Partial<SimulationParams>
 }
+
+export interface VelocityBucket {
+  min: number
+  max: number
+  count: number
+}
+
+export interface RegionDensity {
+  region: string
+  count: number
+  percentage: number
+}
+
+export interface SimulationStats {
+  speedDistribution: VelocityBucket[]
+  avgSpeed: number
+  maxSpeed: number
+  collisionsPerFrame: number
+  totalCollisions: number
+  regionDensity: RegionDensity[]
+  avgKineticEnergy: number
+  momentum: [number, number, number]
+}

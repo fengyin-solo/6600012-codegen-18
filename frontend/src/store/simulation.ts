@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { SimMode, SimulationParams, Particle } from '../types'
+import type { SimMode, SimulationParams, Particle, SimulationStats } from '../types'
 
 const COLORS = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#c084fc','#f472b6','#38bdf8']
 
@@ -22,10 +22,31 @@ function randomParticles(count: number): Particle[] {
   }))
 }
 
+const initialStats: SimulationStats = {
+  speedDistribution: Array.from({ length: 8 }, (_, i) => ({ min: i, max: i + 1, count: 0 })),
+  avgSpeed: 0,
+  maxSpeed: 0,
+  collisionsPerFrame: 0,
+  totalCollisions: 0,
+  regionDensity: [
+    { region: '上+前+左', count: 0, percentage: 0 },
+    { region: '上+前+右', count: 0, percentage: 0 },
+    { region: '上+后+左', count: 0, percentage: 0 },
+    { region: '上+后+右', count: 0, percentage: 0 },
+    { region: '下+前+左', count: 0, percentage: 0 },
+    { region: '下+前+右', count: 0, percentage: 0 },
+    { region: '下+后+左', count: 0, percentage: 0 },
+    { region: '下+后+右', count: 0, percentage: 0 },
+  ],
+  avgKineticEnergy: 0,
+  momentum: [0, 0, 0],
+}
+
 interface SimStore extends SimulationParams {
   particles: Particle[]
   fps: number
   totalEnergy: number
+  stats: SimulationStats
   setMode: (mode: SimMode) => void
   setParticleCount: (count: number) => void
   setParam: <K extends keyof SimulationParams>(key: K, value: SimulationParams[K]) => void
@@ -33,6 +54,8 @@ interface SimStore extends SimulationParams {
   setFps: (fps: number) => void
   setTotalEnergy: (e: number) => void
   applyPreset: (preset: Partial<SimulationParams>) => void
+  setStats: (stats: SimulationStats) => void
+  resetStats: () => void
 }
 
 export const useSimStore = create<SimStore>((set, get) => ({
@@ -47,6 +70,7 @@ export const useSimStore = create<SimStore>((set, get) => ({
   particles: randomParticles(300),
   fps: 0,
   totalEnergy: 0,
+  stats: initialStats,
   setMode: (mode) => set({ mode }),
   setParticleCount: (count) => set({ particleCount: count, particles: randomParticles(count) }),
   setParam: (key, value) => set({ [key]: value } as any),
@@ -61,4 +85,6 @@ export const useSimStore = create<SimStore>((set, get) => ({
     const { particleCount } = get()
     set({ particles: randomParticles(particleCount) })
   },
+  setStats: (stats) => set({ stats }),
+  resetStats: () => set({ stats: initialStats }),
 }))
